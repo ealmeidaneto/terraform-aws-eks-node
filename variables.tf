@@ -30,7 +30,7 @@ variable "scaling_config" {
 }
 
 variable "subnet_ids" {
-  type = list(string)
+  type        = list(string)
   description = "(Required) Identifiers of EC2 Subnets to associate with the EKS Node Group. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster)."
 
 }
@@ -48,26 +48,26 @@ variable "disk_size" {
 
 }
 variable "force_update_version" {
-  type = bool
-  default = false
-  description =  "(Optional) Force version update if existing pods are unable to be drained due to a pod disruption budget issue."
+  type        = bool
+  default     = false
+  description = "(Optional) Force version update if existing pods are unable to be drained due to a pod disruption budget issue."
 }
 
 variable "instance_types" {
-  type    = list(string)
-  default = ["t3.medium"]
+  type        = list(string)
+  default     = ["t3.medium"]
   description = "(Optional) Set of instance types associated with the EKS Node Group. Defaults to [. Terraform will only perform drift detection if a configuration value is provided. Currently, the EKS API only accepts a single value in the set."
 }
 
 variable "labels" {
-  type = map(string)
-  default = {}
+  type        = map(string)
+  default     = {}
   description = "(Optional) Key-value map of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed."
 }
 
 variable "launch_template" {
-  type = list(map(string))
-  default = []
+  type        = list(map(string))
+  default     = []
   description = "(Optional) Configuration block with Launch Template settings. Detailed below."
 }
 
@@ -97,8 +97,8 @@ variable "ec2_ssh_key" {
 }
 
 variable "kubernetes_version" {
-  type = string
-  default = "1.17"
+  type        = string
+  default     = "1.17"
   description = "(Optional) Kubernetes version. Defaults to EKS Cluster Kubernetes version. Terraform will only perform drift detection if a configuration value is provided."
 }
 
