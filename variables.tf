@@ -11,15 +11,27 @@ variable "node_group_name" {
   description = " (Required) Name of the EKS Node Group."
 }
 
-
-variable "node_subnets" {
-  type = list(string)
-
+variable "create_node_iam" {
+  type        = bool
+  default     = true
+  description = "Controls if an IAM policy will be created. If false, variable node_role_arn should receive a policy ARN"
 }
 
-variable "instance_types" {
-  type    = list(string)
-  default = ["t3.large"]
+variable "node_role_arn" {
+  type        = string
+  default     = ""
+  description = "(Required) Amazon Resource Name (ARN) of the IAM Role that provides permissions for the EKS Node Group."
+}
+
+variable "scaling_config" {
+  type        = list(map(any))
+  default     = []
+  description = "(Required) Configuration block with scaling settings."
+}
+
+variable "subnet_ids" {
+  type = list(string)
+  description = "(Required) Identifiers of EC2 Subnets to associate with the EKS Node Group. These subnets must have the following resource tag: kubernetes.io/cluster/CLUSTER_NAME (where CLUSTER_NAME is replaced with the name of the EKS Cluster)."
 
 }
 
@@ -31,27 +43,51 @@ variable "ami_type" {
 
 variable "disk_size" {
   type        = number
-  default     = 60
-  description = "Disk size in GiB for worker nodes."
+  default     = 20
+  description = "Disk size in GiB for worker nodes. Defaults to 20"
 
 }
-
-variable "node_tags" {
-  description = "A map of tags"
-  type        = map(string)
-  default     = {}
+variable "force_update_version" {
+  type = bool
+  default = false
+  description =  "(Optional) Force version update if existing pods are unable to be drained due to a pod disruption budget issue."
 }
+
+variable "instance_types" {
+  type    = list(string)
+  default = ["t3.medium"]
+  description = "(Optional) Set of instance types associated with the EKS Node Group. Defaults to [. Terraform will only perform drift detection if a configuration value is provided. Currently, the EKS API only accepts a single value in the set."
+}
+
+variable "labels" {
+  type = map(string)
+  default = {}
+  description = "(Optional) Key-value map of Kubernetes labels. Only labels that are applied with the EKS API are managed by this argument. Other Kubernetes labels applied to the EKS Node Group will not be managed."
+}
+
+variable "launch_template" {
+  type = list(map(string))
+  default = []
+  description = "(Optional) Configuration block with Launch Template settings. Detailed below."
+}
+
+// variable "release_version" {
+//   type = string
+//   default = "latest"
+//   description = "(Optional) AMI version of the EKS Node Group. Defaults to latest version for Kubernetes version."
+// }
+
 
 variable "remote_access" {
   type        = any
   default     = []
-  description = "Map for remote_acess configuration"
+  description = "(Optional) Configuration block with remote access settings."
 }
 
-variable "vpc_id" {
-  type        = string
-  default     = ""
-  description = "VPC ID for security group"
+variable "tags" {
+  type        = map(string)
+  default     = {}
+  description = "(Optional) Key-value map of resource tags."
 }
 
 variable "ec2_ssh_key" {
@@ -60,29 +96,10 @@ variable "ec2_ssh_key" {
   default     = ""
 }
 
-variable "create_cluster_iam" {
-  type        = bool
-  default     = true
-  description = "Controls iam rules are created to EKS master will be created or not"
-}
-
-
-variable "scaling_config" {
-  type        = list(map(any))
-  default     = []
-  description = "Variable used to define scaling configuration"
-}
-
-variable "create_node_iam" {
-  type        = bool
-  default     = true
-  description = "Controls if an IAM policy will be created. If false, a policy ARN hould be provided"
-}
-
-variable "role_arn" {
-  type        = string
-  default     = ""
-  description = "Role ARN to be used by EKS Nodes"
+variable "kubernetes_version" {
+  type = string
+  default = "1.17"
+  description = "(Optional) Kubernetes version. Defaults to EKS Cluster Kubernetes version. Terraform will only perform drift detection if a configuration value is provided."
 }
 
 variable "create_cluster_autoscaler" {
